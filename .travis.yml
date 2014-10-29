@@ -3,10 +3,10 @@ language: c
 cache:
   directories:
       - ../ErpBI.zip
-	  - ../biserver-ce.zip
-	  - ../data-integration.zip
+      - ../biserver-ce.zip
+      - ../data-integration.zip
       - ~/.npm
-	  - ~/.m2
+      - ~/.m2
 
 script:
   # Bootstrap
