@@ -321,7 +321,7 @@ download_files () {
 	mv pentaho.xml pentaho.xml.sample
 	cat pentaho.xml.sample | \
 	sed s/org.h2.Driver/org.postgresql.Driver/ | \
-	sed s#jdbc:h2:../../../h2database/demomfg#jdbc:postgresql://localhost:5432/erpbi# \
+	sed s'#jdbc:h2:../../../h2database/demomfg#jdbc:postgresql://localhost:'$DATABASELOADPORT'/erpbi#' \
 	> pentaho.xml  2>&1 | tee -a $LOG_FILE
 }
 
