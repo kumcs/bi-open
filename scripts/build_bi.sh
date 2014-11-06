@@ -62,7 +62,7 @@ while getopts ":ieblmuxyzd:U:g:P:t:N:n:j:h:p:c:o:r:k:" opt; do
       DATABASE=$OPTARG
       ;;
     p)
-      # Set database port for extract)
+      # Set database port (for extract)
       DATABASEPORT=$OPTARG
       ;;
     h)
