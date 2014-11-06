@@ -10,7 +10,7 @@ cache:
 
 script:
   # Bootstrap
-  - wget git.io/hikK5g -qO- | sudo bash
+  - wget xtuple.com/bootstrap -qO- | sudo bash
   
   # Install server. Can't use npm because of user propmt?
   - npm install -g xtuple-server
