@@ -365,7 +365,7 @@ load_pentaho() {
 	log "and load data into erpbi with tenant name " $TENANT
 	log "######################################################"
 	log ""
-	createdb -U postgres -O admin erpbi 2>&1 | tee -a $LOG_FILE
+	createdb -U admin -O admin -p $DATABASELOADPORT erpbi 2>&1 | tee -a $LOG_FILE
 	cdir $BISERVER_HOME/data-integration
 	export KETTLE_HOME=properties/psg-linux
 	
