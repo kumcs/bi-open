@@ -1,9 +1,11 @@
-[![Build Status](https://travis-ci.org/xtuple/bi-open.svg?branch=master)](https://travis-ci.org/xtuple/bi-open)
+This repo contains the source for business intelligence server-side components of xTuple Open BI.  bi-open consists of:
 
-xTuple Open Business Intelligence is powered by Pentaho technology and is implemented by the following projects:
+* Pentaho Data Integration ETL processes to extract and load CRM data.
+* Pentaho analysis schema definitions for CRM cubes.
+* Pentaho extensions for single signon and OLAP multi-tenant support.
+* Scripts for installing and starting/stopping the BI Server.
 
-* ErpBI Solutions (http://sourceforge.net/projects/erpbi/) provides a pre-configured Pentaho installation  with a business intelligence server, reporting engine and ETL technology.
-* xTuple Open BI (https://github.com/xtuple/bi-open) provides the solution files implementing xTuple Business Intelligence.
-* xTuple Open BI Extension (https://github.com/xtuple/xtuple-extensions/tree/master/source/bi-open) provides dashboard support the xTuple Web Client.
-
-For installation information, see: https://github.com/xtuple/xtuple/wiki/xTuple-Open-Business-Intelligence
+The build_bi.sh will download the Pentaho technologies from ErpBI Solutions (http://sourceforge.net/projects/erpbi/).  
+ErpBI provides a pre-configured Pentaho installation with a BI server, reporting engine and PDI technology.
+The script also install the above components in the BI server.  For more innformation on the script, see:
+https://github.com/xtuple/xtuple/wiki/xTuple-Open-Business-Intelligence  
