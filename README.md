@@ -1,3 +1,5 @@
+xTuple Open BI
+==============
 This repo contains the source for business intelligence server-side components of xTuple Open BI.  bi-open consists of:
 
 * Pentaho Data Integration ETL processes to extract and load CRM data.
