@@ -23,7 +23,13 @@ import org.springframework.security.context.SecurityContextHolder;
 
 /**
  * Modify cube schema with Tenant ID.  Tenant ID comes from the user name 
- * created by OAuthSSO single signon.
+ * created by OAuthSSO single signon.  User name has form username-tentant.organization.
+ * We replace the [organization] string in the schema with tenant.organization.  If the
+ * schema checksum matches the checksum of an existing schema, the existing schema is used.
+ * 
+ * If a connection parameter of tenantOverride is defined in datasources.xml connnection
+ * then that string will be used as tenant.organization.  This is useful for mapping multiple
+ * systems to one tenant for demos.
  * 
  * <p>
  * Having trouble?  Turn on DEBUG logging by setting:
@@ -61,12 +67,13 @@ public class ParameterDynamicSchemaProcessor
         Util.PropertyList connectInfo,
         InputStream stream) throws Exception
     {
+        String tenantOverride = connectInfo.get("tenantOverride", "");
         String schema = super.filter(schemaUrl, connectInfo, stream);
-        schema = doReplacements(schema);
+        schema = doReplacements(schema, tenantOverride);
         return schema;
     }
 
-    private String doReplacements(String schema) {
+    private String doReplacements(String schema, String tenantOverride) {
     	
     	//  Looks like session is not updated with user name after Authentication is
     	//  created.  Use Authentication instead.
@@ -78,6 +85,9 @@ public class ParameterDynamicSchemaProcessor
     	String tenantId;
     	if (separator == -1) {
     		tenantId ="";
+    	}
+    	else if (!(tenantOverride.equals(""))) {
+    		tenantId = tenantOverride;    		
     	}
     	else {
     		tenantId = userId.substring(separator +1);
