@@ -20,6 +20,7 @@ RUNALL=true
 BI_DIR=$RUN_DIR/..
 XT_DIR=$RUN_DIR/../../xtuple
 export BISERVER_HOME=$RUN_DIR/../../ErpBI
+BISERVERPORT=9007
 DATABASE=dev
 DATABASEHOST=localhost
 DATABASEUSER=admin
@@ -225,6 +226,15 @@ then
 	fi
 fi
 
+if [[  $(netstat -antu | grep 9007) ]];
+then
+	log ""
+	log "####################################################################################"
+	log "Warning, " $BISERVERPORT " is already in use.  Is BI Server already running?"
+	log "####################################################################################"
+	log ""
+fi
+
 install_packages () {
 	log ""
 	log "######################################################"
@@ -309,19 +319,19 @@ download_files () {
 	fi
 	
 	#
-	#  BI Server is set up to listen on 8443 for SSL.  We change to 8444 to not conflict with the app
+	#  BI Server is set up to listen on 8443 for SSL.  We change to $BISERVERPORT to avoid conflicts
 	#	
 	cdir $BISERVER_HOME/biserver-ce/tomcat/conf
 	mv server.xml server.xml.sample
 	cat server.xml.sample | \
-	sed s/port=\"8443\"/port=\"8444\"/ \
+	sed s/port=\"8443\"/port=\"$BISERVERPORT\"/ \
 	> server.xml  2>&1 | tee -a $LOG_FILE
 	
 	cdir $BISERVER_HOME/biserver-ce/tomcat/conf/Catalina/localhost
 	mv pentaho.xml pentaho.xml.sample
 	cat pentaho.xml.sample | \
 	sed s/org.h2.Driver/org.postgresql.Driver/ | \
-	sed s#jdbc:h2:../../../h2database/demomfg#jdbc:postgresql://localhost:5432/erpbi# \
+	sed s'#jdbc:h2:../../../h2database/demomfg#jdbc:postgresql://localhost:'$DATABASELOADPORT'/erpbi#' \
 	> pentaho.xml  2>&1 | tee -a $LOG_FILE
 }
 
@@ -365,7 +375,7 @@ load_pentaho() {
 	log "and load data into erpbi with tenant name " $TENANT
 	log "######################################################"
 	log ""
-	createdb -U postgres -O admin erpbi 2>&1 | tee -a $LOG_FILE
+	createdb -U admin -O admin -p $DATABASELOADPORT erpbi 2>&1 | tee -a $LOG_FILE
 	cdir $BISERVER_HOME/data-integration
 	export KETTLE_HOME=properties/psg-linux
 	
@@ -472,6 +482,6 @@ log "######################################################"
 log "                FINISED! READ ME                      "
 log "If you use the self signed certificate created by this"
 log "script you will need to accept the certificate in your"
-log "browser.  Connect to https://"$COMMONNAME":8443"
+log "browser.  Connect to https://"$COMMONNAME":"$BISERVERPORT
 log "######################################################"
 log ""
