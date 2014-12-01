@@ -379,7 +379,8 @@ load_pentaho() {
 	cdir $BISERVER_HOME/data-integration
 	export KETTLE_HOME=properties/psg-linux
 	
-	PSGLOCATION=$(sudo find /usr/lib -name psql)
+	# Find first install of psql.  We probably need to look for a certain releases of PG
+	PSGLOCATION=$(sudo find /usr/lib -name psql | awk 'NR==1{print $1}')
 	if  ! [ $PSGLOCATION ]
 	then
 		log ""
