@@ -320,11 +320,14 @@ download_files () {
 	
 	#
 	#  BI Server is set up to listen on 8443 for SSL.  We change to $BISERVERPORT to avoid conflicts
+	#  Remove the group protocol sslProtocol as is allows dowgrade to dangerour SSLv3.  Specify exact TLS
+	#  list.  Use protocols= in tomcat 6.0.0 and sslEnabledProtocols= in tomcat >= 6.0.36
 	#	
 	cdir $BISERVER_HOME/biserver-ce/tomcat/conf
 	mv server.xml server.xml.sample
 	cat server.xml.sample | \
-	sed s/port=\"8443\"/port=\"$BISERVERPORT\"/ \
+	sed s/port=\"8443\"/port=\"$BISERVERPORT\"/ | \
+	sed s/sslProtocol=\"TLS\"/protocols=\"TLSv1.2,TLSv1.1,TLSv1,SSLv2Hello\"/ \
 	> server.xml  2>&1 | tee -a $LOG_FILE
 	
 	cdir $BISERVER_HOME/biserver-ce/tomcat/conf/Catalina/localhost
