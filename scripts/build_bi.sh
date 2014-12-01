@@ -31,10 +31,11 @@ GETZIPS=Y
 TENANT=default
 CITIES=democities.txt
 COMMONNAME=$(hostname)
+HTTPNAME=localhost
 CREATE=Y
 INCREMENTAL=N
 
-while getopts ":ieblmuxyzd:U:g:P:t:n:j:h:p:c:o:r:k:" opt; do
+while getopts ":ieblmuxyzd:U:g:P:t:N:n:j:h:p:c:o:r:k:" opt; do
   case $opt in
     e)
       # Install ErpBI and configure
@@ -61,7 +62,7 @@ while getopts ":ieblmuxyzd:U:g:P:t:n:j:h:p:c:o:r:k:" opt; do
       DATABASE=$OPTARG
       ;;
     p)
-      # Set database port for extract)
+      # Set database port (for extract)
       DATABASEPORT=$OPTARG
       ;;
     h)
@@ -101,8 +102,12 @@ while getopts ":ieblmuxyzd:U:g:P:t:n:j:h:p:c:o:r:k:" opt; do
       CITIES=$OPTARG
       ;;	  
     n)
-      # Common name for self signed SSL certificate
+      # Common name for self signed SSL certificate and https host connection
       COMMONNAME=$OPTARG
+      ;;
+    N)
+      # http Host connection name 
+      HTTPNAME=$OPTARG
       ;;
     c)
       # Path for config file
@@ -424,10 +429,14 @@ prep_mobile() {
 	sed 's#restkeyfile:.*#restkeyfile:\"./lib/rest-keys/server.key\",#' | \
 	sed 's#\"tenantname\":.*#tenantname:\"'$TENANT'",#' | \
 	sed 's#tenantname:.*#tenantname:\"'$TENANT'",#' | \
-	sed 's#\"httpsport\":.*#httpsport:443,#' | \
-	sed 's#httpsport:.*#httpsport:443,#' | \
-	sed 's#\"bihost\":.*#bihost:\"'$COMMONNAME'\",#' | \
-	sed 's#bihost:.*#bihost:\"'$COMMONNAME'\",#' \
+	sed 's#\"bihttpsport\":.*#bihttpsport:443,#' | \
+	sed 's#bihttpsport:.*#bihttpsport:443,#' | \
+	sed 's#\"bihttpshost\":.*#bihttpshost:\"'$COMMONNAME'\",#' | \
+	sed 's#bihttpshost:.*#bihttpshost:\"'$COMMONNAME'\",#' | \
+	sed 's#\"bihttpport\":.*#bihttpport:8080,#' | \
+	sed 's#bihttpport:.*#bihttpport:8080,#' | \
+	sed 's#\"bihttphost\":.*#bihttphost:\"'$HTTPNAME'\",#' | \
+	sed 's#bihttphost:.*#bihttphost:\"'$HTTPNAME'\",#' \
 	> $CONFIGPATH
 }
 
