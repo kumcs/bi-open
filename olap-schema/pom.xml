@@ -5,10 +5,6 @@
   <version>1.0</version>
   <packaging>pom</packaging>
   <repositories>
-  	<repository>
-    	<id>svn.apache.org</id>
-    	<url>http://svn.apache.org/repos/asf/servicemix/m2-repo</url>
-	</repository>
 	</repositories>
   <dependencies>  
   <dependency>
