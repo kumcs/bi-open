@@ -85,7 +85,7 @@ while getopts ":ieblmuxyzEd:U:g:P:t:N:n:j:h:p:c:o:r:k:" opt; do
       ;;
     E)
       # Set database (for load) to embedded for demos
-      DATABASELOADEMBEDDED=N
+      DATABASELOADEMBEDDED=Y
       ;;	  
     y)
       # Set database ssl connect option (for extract)
