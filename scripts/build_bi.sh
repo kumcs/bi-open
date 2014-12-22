@@ -335,7 +335,7 @@ download_files () {
 	sed s/sslProtocol=\"TLS\"/protocols=\"TLSv1.2,TLSv1.1,TLSv1,SSLv2Hello\"/ \
 	> server.xml  2>&1 | tee -a $LOG_FILE
 	#
-	# If datamart is not embedded update connection info to postgresql
+	# If datamart is not embedded update connection info to postgresql, else update data mart name
 	#
 	if  [ "$DATABASELOADEMBEDDED" = "N" ]
       then	
@@ -345,6 +345,12 @@ download_files () {
 	    sed s/org.h2.Driver/org.postgresql.Driver/ | \
 	    sed s'#jdbc:h2:../../../h2database/demomfg#jdbc:postgresql://localhost:'$DATABASELOADPORT'/erpbi#' \
 	    > pentaho.xml  2>&1 | tee -a $LOG_FILE
+	  else
+	    cdir $BISERVER_HOME/biserver-ce/tomcat/conf/Catalina/localhost
+	    mv pentaho.xml pentaho.xml.sample
+	    cat pentaho.xml.sample | \
+	    sed s'#jdbc:h2:../../../h2database/demomfg#jdbc:h2:../../../h2database/erpbi#' \
+	    > pentaho.xml  2>&1 | tee -a $LOG_FILE	
 	fi
 }
 
@@ -417,10 +423,16 @@ load_pentaho() {
 	sed s'#erpi.incremental=.*#erpi.incremental='$INCREMENTAL'#' \
 	> $KETTLE_HOME/.kettle/kettle.properties  2>&1 | tee -a $LOG_FILE
 	
+	# We also update the properties in .kettle if they want to use spoon interactively
+	cp -rf $KETTLE_HOME/.kettle/kettle.properties .kettle
+	
 	if  [ "$DATABASELOADEMBEDDED" = "N" ]
       then
 	  	mv $KETTLE_HOME/.kettle/kettle.properties $KETTLE_HOME/.kettle/kettle.properties.sample  2>&1 | tee -a $LOG_FILE
 	    cat $KETTLE_HOME/.kettle/kettle.properties.sample | \
+	    sed s'#erpi.datamart.loader.*#erpi.datamart.loader=postgresql#' | \
+	    sed s'#erpi.datamart.schemacascade.*#erpi.datamart.schemacascade=CASCADE#' | \
+	    sed s'#erpi.datamart.driver.*#erpi.datamart.driver=org.postgresql.Driver#' | \
 	    sed s'#erpi.datamart.port.*#erpi.datamart.port='$DATABASELOADPORT'#' | \
 	    sed s'#erpi.datamart.url=.*#erpi.datamart.url=jdbc\:postgresql\://localhost\:'$DATABASELOADPORT'/erpbi#' \
 	    > $KETTLE_HOME/.kettle/kettle.properties  2>&1 | tee -a $LOG_FILE
