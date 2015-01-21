@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+	<!-- 
+	Copyright 2012-2014 Jeff Gunderson
+	Refer to included license
+	--> 
 <!-- 
      Cubes using views for tenant support and xTuple strings.  
      Note that entity definitions including other entity defintions must be defined in the
@@ -15,16 +19,14 @@
   <!ENTITY crm-cube SYSTEM "crm/cube.xml">
   <!ENTITY % sales SYSTEM "../../../bi/olap-schema/src/sales/views.xml">
   <!ENTITY sales-cube SYSTEM "../../../bi/olap-schema/src/sales/cube.xml">
-  <!ENTITY % financial SYSTEM "../../../bi-financial/olap-schema/src/financial/tables.xml">
-  <!ENTITY financial-cube SYSTEM "../../../bi-financial/olap-schema/src/financial/cube.xml">
-  <!ENTITY erpbi-role SYSTEM "../../../bi-financial/olap-schema/src/roles/erpbi-role.xml">
+  <!ENTITY erpbi-role SYSTEM "../../../bi/olap-schema/src/roles/erpbi-role.xml">
+  <!ENTITY crm-role SYSTEM "roles/erpbi-role.xml">
   <!ENTITY authenticated-role SYSTEM "roles/authenticated-role.xml">
   %strings;
   %sales-strings;
   %conformed;
   %sales;
   %crm;
-  %financial;
 ]>
 
 <Schema name="&Schema;">
@@ -35,8 +37,6 @@
 	<Parameter name="APRValue" type="Numeric" modifiable="false" defaultValue=".065"/>
 	<!-- Conformed Dimensions -->
 	&conformed-cube;
-	<!-- Financial Cubes -->
-	&financial-cube;
 	<!-- CRM Cubes -->
 	&crm-cube;
 	<!-- Sales Cubes -->

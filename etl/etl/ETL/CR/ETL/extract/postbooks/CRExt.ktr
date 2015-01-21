@@ -335,7 +335,9 @@ select
  	COALESCE(ophead_amount, 0) * COALESCE(ophead_probability_prcnt, 0) &#47; 100	as &quot;Amount_Weighted&quot;,
  	COALESCE(ophead_amount, 0) * COALESCE(ophead_probability_prcnt, 0) &#47; 100	as &quot;Amount_Local_Weighted&quot;,
 	COALESCE(ophead_probability_prcnt, 0)									 	as &quot;Probability&quot;,
-	(SELECT company_number FROM company ORDER BY company_number DESC LIMIT 1)	as &quot;Company&quot;,
+	(SELECT CASE WHEN company_number = &apos;&apos; THEN &apos;Unspecified&apos;
+			ELSE COALESCE(company_number, &apos;Unspecified&apos;) END
+       FROM company ORDER BY company_number DESC LIMIT 1)						as &quot;Company&quot;,
 	(SELECT curr_abbr FROM curr_symbol WHERE curr_base = TRUE) 					as &quot;Local_Currency&quot;,
 	&apos;Unspecified&apos; 																as &quot;Division&quot;,
 	&apos;Unspecified&apos; 																as &quot;Business_Unit&quot;,
@@ -430,7 +432,9 @@ from ophead
 	quitem_qtyord																			as &quot;Quantity_Order&quot;,					    
 	COALESCE(quitem_unitcost, 0)															as &quot;Cost&quot;,
 	cust_number 																			as &quot;Customer&quot;,
-	(SELECT company_number FROM company ORDER BY company_number DESC LIMIT 1)				as &quot;Company&quot;,
+	(SELECT CASE WHEN company_number = &apos;&apos; THEN &apos;Unspecified&apos;
+			ELSE COALESCE(company_number, &apos;Unspecified&apos;) END
+       FROM company ORDER BY company_number DESC LIMIT 1)									as &quot;Company&quot;,
 	item_number																				as &quot;Item&quot;,
 	(SELECT curr_abbr FROM curr_symbol WHERE curr_base = TRUE) 								as &quot;Local_Currency&quot;,
 	&apos;Unspecified&apos; 																			as &quot;Division&quot;,

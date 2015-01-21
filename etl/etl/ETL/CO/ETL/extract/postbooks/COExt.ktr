@@ -1575,42 +1575,6 @@ WHERE COUNT &gt; 1
     </step>
 
   <step>
-    <name>Read custinfo</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <connection>source</connection>
-    <sql>SELECT
---  Replace line feeds in names.  PDI doesn&apos;t yet suppport Allow Breaks in Enclosed Fields in Text Input
---  and replace csv separator ;
-	&apos;${erpi.tenant.id}&apos; as &quot;tenant&quot;,
-	regexp_replace(SUBSTR(COALESCE(&quot;cust_name&quot;, &apos;&apos;), 0, 40) || &apos;, &apos; || &quot;cust_number&quot;, E&apos;\r|\n|;&apos;, &apos;&apos;, &apos;g&apos;) as &quot;customer_name&quot;,
-	&quot;cust_terms_id&quot; as &quot;payment_terms&quot;,
-	&quot;cust_number&quot; as &quot;customer_nk&quot;,
-	CASE WHEN custtype_code = &apos;&apos; THEN &apos;Unspecified&apos;
-			ELSE COALESCE(custtype_code, &apos;Unspecified&apos;) END as &quot;customer_type&quot;,
-	COALESCE(&quot;cust_creditlmt&quot;, 0) as &quot;credit_limit&quot;
-FROM custinfo, custtype
-WHERE cust_custtype_id = custtype_id</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>Y</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>110</xloc>
-      <yloc>30</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
     <name>Read api.item</name>
     <type>TableInput</type>
     <description/>
@@ -1721,10 +1685,10 @@ FROM crmacct;</sql>
     <connection>source</connection>
     <sql>SELECT
 	&apos;${erpi.tenant.id}&apos; as &quot;tenant&quot;,	
-	curr_abbr as local_currency_nk,
+	(SELECT CASE WHEN curr_abbr = &apos;&apos; THEN &apos;Unspecified&apos;
+			ELSE COALESCE(curr_abbr, &apos;Unspecified&apos;) END ) as local_currency_nk,
 	CASE WHEN curr_base = TRUE THEN &apos;Y&apos; ELSE &apos;&apos; END AS local_currency_base
-FROM curr_symbol;
-</sql>
+ FROM curr_symbol;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -1734,6 +1698,42 @@ FROM curr_symbol;
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>130</xloc>
       <yloc>589</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Read custinfo</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>source</connection>
+    <sql>SELECT
+--  Replace line feeds in names.  PDI doesn&apos;t yet suppport Allow Breaks in Enclosed Fields in Text Input
+--  and replace csv separator ;
+	&apos;${erpi.tenant.id}&apos; as &quot;tenant&quot;,
+	regexp_replace(SUBSTR(COALESCE(&quot;cust_name&quot;, &apos;&apos;), 0, 40) || &apos;, &apos; || &quot;cust_number&quot;, E&apos;\r|\n|;&apos;, &apos;&apos;, &apos;g&apos;) as &quot;customer_name&quot;,
+	&quot;cust_terms_id&quot; as &quot;payment_terms&quot;,
+	&quot;cust_number&quot; as &quot;customer_nk&quot;,
+	CASE WHEN custtype_code = &apos;&apos; THEN &apos;Unspecified&apos;
+			ELSE COALESCE(custtype_code, &apos;Unspecified&apos;) END as &quot;customer_type&quot;,
+	COALESCE(&quot;cust_creditlmt&quot;, 0) as &quot;credit_limit&quot;
+FROM custinfo, custtype
+WHERE cust_custtype_id = custtype_id</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>110</xloc>
+      <yloc>30</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
