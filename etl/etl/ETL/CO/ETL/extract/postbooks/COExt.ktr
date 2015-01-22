@@ -1629,17 +1629,6 @@ FROM api.item;</sql>
 --  and replace csv separator ;
 	regexp_replace(SUBSTR(COALESCE(&quot;company_descrip&quot;, &apos;&apos;), 0, 40) || &apos;, &apos; || company_number, E&apos;\r|\n|;&apos;, &apos;&apos;, &apos;g&apos;) as &quot;company_name&quot;,
 	company_external
-FROM company
-
-UNION
---  
---  Company is required but not all implementations define company. Insert a default row.
---
-SELECT
-	&apos;${erpi.tenant.id}&apos; as &quot;tenant&quot;,
-	&apos;default&apos; as &quot;company_nk&quot;,
-	&apos;default company&apos; as &quot;company_name&quot;,
-	false
 FROM company;</sql>
     <limit>0</limit>
     <lookup/>
