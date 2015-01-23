@@ -396,8 +396,7 @@ from ophead
 	&apos;${erpi.tenant.id}&apos;																		as &quot;Tenant&quot;,
 	CASE WHEN quhead_number = &apos;&apos; THEN &apos;Unspecified&apos;
 		ELSE COALESCE(quhead_number, &apos;Unspecified&apos;) END 									as &quot;ID_Document_NK&quot;,
-	CASE WHEN cust_name = &apos;&apos; THEN &apos;Unspecified&apos;
-		ELSE COALESCE(cust_name, &apos;Unspecified&apos;) END 									as &quot;ID_Document_Name&quot;,
+	regexp_replace(SUBSTR(COALESCE(&quot;cust_name&quot;, &apos;&apos;), 0, 40) || &apos;, &apos; || &quot;cust_number&quot;, E&apos;\r|\n|;&apos;, &apos;&apos;, &apos;g&apos;) as &quot;ID_Document_Name&quot;,
 	CASE WHEN quhead_number = &apos;&apos; THEN &apos;Unspecified&apos;
 		ELSE COALESCE(quhead_number, &apos;Unspecified&apos;) END 									as &quot;ID_Trans_Doc_NK&quot;, 	
 	(CASE WHEN quhead_number = &apos;&apos; THEN &apos;Unspecified&apos; 
