@@ -83,11 +83,11 @@ public class ParameterDynamicSchemaProcessor
     	
     	int separator = userId.indexOf("-");
     	String tenantId;
-    	if (separator == -1) {
-    		tenantId ="";
-    	}
-    	else if (!(tenantOverride.equals(""))) {
+    	if (!(tenantOverride.equals(""))) {
     		tenantId = tenantOverride;    		
+    	}
+    	else if (separator == -1) {
+    		tenantId ="";
     	}
     	else {
     		tenantId = userId.substring(separator +1);

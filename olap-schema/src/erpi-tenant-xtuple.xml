@@ -21,8 +21,7 @@
 <Schema name="&Schema;">
     <!-- 
 	      Careful, there are issues with the schema parser.  UserDefinedFunctions must be last.
-	      For some reason sales must be after crm or the UserDefinedFuctions aren't found when
-		  used by sales.
+	      For some reason sales must be last or the UserDefinedFuctions aren't found.
 	-->
 	<Parameter name="APRValue" type="Numeric" modifiable="false" defaultValue=".065"/>
 	<!-- Conformed Dimensions -->

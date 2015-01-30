@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>CRLodPeriodFacts</name>
+    <name>ErpBIETLCRETLloadjdbcCRLodOpportunityFacts</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
-    <trans_status>0</trans_status>
     <directory>&#47;</directory>
     <parameters>
     </parameters>
@@ -76,9 +75,9 @@
         </clusterschema>
     </clusterschemas>
   <created_user>-</created_user>
-  <created_date>2011&#47;09&#47;01 16:07:00.269</created_date>
+  <created_date>2014&#47;12&#47;12 14:34:20.673</created_date>
   <modified_user>-</modified_user>
-  <modified_date>2011&#47;09&#47;01 16:07:00.269</modified_date>
+  <modified_date>2014&#47;12&#47;12 14:34:20.673</modified_date>
   </info>
   <notepads>
   </notepads>
@@ -88,7 +87,7 @@
     <type>GENERIC</type>
     <access>Native</access>
     <database/>
-    <port>-1</port>
+    <port>1521</port>
     <username>${erpi.datamart.user}</username>
     <password>${erpi.datamart.password}</password>
     <servername/>
@@ -100,70 +99,16 @@
       <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>Y</attribute></attribute>
       <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
-      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
-      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>Y</attribute></attribute>
-      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>N</attribute></attribute>
-      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
-    </attributes>
-  </connection>
-  <connection>
-    <name>erpi-jdbc-psg</name>
-    <server>${erpi.datamart.host}</server>
-    <type>POSTGRESQL</type>
-    <access>Native</access>
-    <database>${erpi.datamart.database}</database>
-    <port>${erpi.datamart.port}</port>
-    <username>${erpi.datamart.user}</username>
-    <password>${erpi.datamart.password}</password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
-    <attributes>
-      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
-      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>Y</attribute></attribute>
-      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
-      <attribute><code>PORT_NUMBER</code><attribute>${erpi.datamart.port}</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
       <attribute><code>QUOTE_ALL_FIELDS</code><attribute>Y</attribute></attribute>
       <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>N</attribute></attribute>
       <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
     </attributes>
   </connection>
   <order>
-  <hop> <from>Add TENANT field 2</from><to>Insert &quot;CRM_OPPORTUNITY_FACTS_BY_PERIOD&quot;</to><enabled>Y</enabled> </hop>  <hop> <from>OpportunityPeriodFacts</from><to>Add TENANT field 2</to><enabled>Y</enabled> </hop>  </order>
+  <hop> <from>OpportunitySK.txt</from><to>Insert &quot;CRM_OPPORTUNITY_FACTS&quot;</to><enabled>Y</enabled> </hop>  </order>
   <step>
-    <name>Add TENANT field 2</name>
-    <type>GetVariable</type>
-    <description/>
-    <distribute>Y</distribute>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <fields>
-      <field>
-        <name>tenant</name>
-        <variable>${erpi.tenant.id}</variable>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-    </fields>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>258</xloc>
-      <yloc>139</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Insert &quot;CRM_OPPORTUNITY_FACTS_BY_PERIOD&quot;</name>
+    <name>Insert &quot;CRM_OPPORTUNITY_FACTS&quot;</name>
     <type>InsertUpdate</type>
     <description/>
     <distribute>Y</distribute>
@@ -177,28 +122,16 @@
     <update_bypassed>Y</update_bypassed>
     <lookup>
       <schema>&quot;ERPI&quot;</schema>
-      <table>&quot;CRM_OPPORTUNITY_FACTS_BY_PERIOD&quot;</table>
+      <table>&quot;CRM_OPPORTUNITY_FACTS&quot;</table>
       <key>
-        <name>ISS_DATE_PATTERN</name>
-        <field>DATE_PATTERN</field>
+        <name>ID_Document_NK</name>
+        <field>ID_Document_NK</field>
         <condition>=</condition>
         <name2/>
       </key>
       <key>
-        <name>ISS_FISCAL_PERIOD_K</name>
-        <field>ISSUE_FISCAL_PERIOD_K</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>ID_DOCUMENT_NK</name>
-        <field>ID_DOCUMENT_NK</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>COMPANY_K</name>
-        <field>COMPANY_K</field>
+        <name>Company_K</name>
+        <field>Company_K</field>
         <condition>=</condition>
         <name2/>
       </key>
@@ -209,164 +142,139 @@
         <name2/>
       </key>
       <value>
-        <name>DATE_PATTERN</name>
-        <rename>ISS_DATE_PATTERN</rename>
+        <name>Tenant</name>
+        <rename>Tenant</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>ID_Document_NK</name>
+        <rename>ID_Document_NK</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>ID_Document_Name</name>
+        <rename>ID_Document_Name</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>ISSUE_FISCAL_PERIOD_K</name>
-        <rename>ISS_FISCAL_PERIOD_K</rename>
+        <name>ID_Trans_Doc_NK</name>
+        <rename>ID_Trans_Doc_NK</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>Status</name>
+        <rename>Status</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>ACTUAL_FISCAL_PERIOD_K</name>
-        <rename>AMOUNT_LOCAL</rename>
+        <name>Amount</name>
+        <rename>Amount</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>ENDDATE_K</name>
-        <rename>ENDDATE_K</rename>
+        <name>Amount_Local</name>
+        <rename>Amount_Local</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>ID_DOCUMENT_NK</name>
-        <rename>ID_DOCUMENT_NK</rename>
+        <name>Amount_Weighted</name>
+        <rename>Amount_Weighted</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>ID_DOCUMENT_NAME</name>
-        <rename>ID_DOCUMENT_NAME</rename>
+        <name>Amount_Local_Weighted</name>
+        <rename>Amount_Local_Weighted</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>ID_TRANS_DOC_NK</name>
-        <rename>ID_TRANS_DOC_NK</rename>
+        <name>Probability</name>
+        <rename>Probability</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>STATUS</name>
-        <rename>STATUS</rename>
+        <name>Company_K</name>
+        <rename>Company_K</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>TYPE</name>
-        <rename>TYPE</rename>
+        <name>Issue_Date_K</name>
+        <rename>Issue_Date_K</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>STAGE</name>
-        <rename>STAGE</rename>
+        <name>Assign_Date_K</name>
+        <rename>Assigned_Date_K</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>ISSUE_DATE_K</name>
-        <rename>ISSUE_DATE_K</rename>
+        <name>Target_Date_K</name>
+        <rename>Target_Date_K</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>ASSIGN_DATE_K</name>
-        <rename>ASSIGN_DATE_K</rename>
+        <name>Actual_Date_K</name>
+        <rename>Actual_Date_K</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>TARGET_DATE_K</name>
-        <rename>TARGET_DATE_K</rename>
+        <name>local_currency_k</name>
+        <rename>local_currency_k</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>ACTUAL_DATE_K</name>
-        <rename>ACTUAL_DATE_K</rename>
+        <name>Division_K</name>
+        <rename>Division_K</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>AMOUNT</name>
-        <rename>AMOUNT</rename>
+        <name>Business_Unit_K</name>
+        <rename>Business_Unit_K</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>AMOUNT_LOCAL</name>
-        <rename>AMOUNT_LOCAL</rename>
+        <name>User_K</name>
+        <rename>User_K</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>AMOUNT_WEIGHTED</name>
-        <rename>AMOUNT_WEIGHTED</rename>
+        <name>Profit_Center_K</name>
+        <rename>Profit_Center_K</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>AMOUNT_LOCAL_WEIGHTED</name>
-        <rename>AMOUNT_LOCAL_WEIGHTED</rename>
+        <name>Type</name>
+        <rename>Type</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>PROBABILITY</name>
-        <rename>PROBABILITY</rename>
+        <name>Stage</name>
+        <rename>Stage</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>COMPANY_K</name>
-        <rename>COMPANY_K</rename>
+        <name>CRM_Account_K</name>
+        <rename>CRM_Account_K</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>DIVISION_K</name>
-        <rename>DIVISION_K</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>BUSINESS_UNIT_K</name>
-        <rename>BUSINESS_UNIT_K</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>PROFIT_CENTER_K</name>
-        <rename>PROFIT_CENTER_K</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>CRM_ACCOUNT_K</name>
-        <rename>CRM_ACCOUNT_K</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>USER_K</name>
-        <rename>USER_K</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>LOCAL_CURRENCY_K</name>
-        <rename>LOCAL_CURRENCY_K</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>CONTACT_CITY_K</name>
-        <rename>CONTACT_CITY_K</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>ISSUE_PERIOD_ENDDATE_K</name>
-        <rename>ISSUE_PERIOD_ENDDATE_K</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>tenant</name>
-        <rename>tenant</rename>
+        <name>Contact_City_K</name>
+        <rename>Contact_City_K</rename>
         <update>Y</update>
       </value>
     </lookup>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>430</xloc>
-      <yloc>24</yloc>
+      <xloc>400</xloc>
+      <yloc>53</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
 
   <step>
-    <name>OpportunityPeriodFacts</name>
+    <name>OpportunitySK.txt</name>
     <type>TextFileInput</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <copies>1</copies>
          <partitioning>
            <method>none</method>
@@ -389,7 +297,7 @@
     <layout_paged>N</layout_paged>
     <nr_lines_per_page>80</nr_lines_per_page>
     <nr_lines_doc_header>0</nr_lines_doc_header>
-    <noempty>Y</noempty>
+    <noempty>N</noempty>
     <include>N</include>
     <include_field/>
     <rownum>N</rownum>
@@ -399,7 +307,7 @@
     <encoding/>
     <add_to_result_filenames>Y</add_to_result_filenames>
     <file>
-      <name>${erpi.staging.dir}&#47;CR&#47;work&#47;OpportunityPeriodFacts.txt</name>
+      <name>${erpi.staging.dir}&#47;CR&#47;work&#47;OpportunitySK.txt</name>
       <filemask/>
       <exclude_filemask/>
       <file_required>N</file_required>
@@ -411,12 +319,12 @@
     </filters>
     <fields>
       <field>
-        <name>ISS_DATE_PATTERN</name>
-        <type>String</type>
-        <format/>
+        <name>Tenant</name>
+        <type>-</type>
+        <format>String</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>-1</position>
@@ -426,57 +334,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>ISS_FISCAL_PERIOD_K</name>
-        <type>Integer</type>
-        <format>0000000000000</format>
+        <name>ID_Document_NK</name>
+        <type>-</type>
+        <format>String</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
-        <nullif/>
-        <ifnull/>
-        <position>9</position>
-        <length>0</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>ACT_FISCAL_PERIOD_K</name>
-        <type>Integer</type>
-        <format>0000000000000</format>
-        <currency/>
-        <decimal>N</decimal>
-        <group>none</group>
-        <nullif/>
-        <ifnull/>
-        <position>9</position>
-        <length>0</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>ENDDATE_K</name>
-        <type>Integer</type>
-        <format>0000000000000</format>
-        <currency/>
-        <decimal>N</decimal>
-        <group>none</group>
-        <nullif/>
-        <ifnull/>
-        <position>9</position>
-        <length>0</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>ID_DOCUMENT_NK</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>-1</position>
@@ -486,12 +349,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>ID_DOCUMENT_NAME</name>
-        <type>String</type>
-        <format/>
+        <name>ID_Document_Name</name>
+        <type>-</type>
+        <format>String</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>-1</position>
@@ -501,12 +364,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>ID_TRANS_DOC_NK</name>
-        <type>String</type>
-        <format/>
+        <name>ID_Trans_Doc_NK</name>
+        <type>-</type>
+        <format>String</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>-1</position>
@@ -516,12 +379,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>STATUS</name>
-        <type>String</type>
-        <format/>
+        <name>Status</name>
+        <type>-</type>
+        <format>String</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>-1</position>
@@ -531,12 +394,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>TYPE</name>
-        <type>String</type>
-        <format/>
+        <name>Amount</name>
+        <type>-</type>
+        <format>Number</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>-1</position>
@@ -546,12 +409,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>STAGE</name>
-        <type>String</type>
-        <format/>
+        <name>Amount_Local</name>
+        <type>-</type>
+        <format>Number</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>-1</position>
@@ -561,12 +424,57 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>ISSUE_DATE_K</name>
-        <type>Integer</type>
-        <format>0000000000000</format>
+        <name>Amount_Weighted</name>
+        <type>-</type>
+        <format>Number</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
+        <nullif/>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Amount_Local_Weighted</name>
+        <type>-</type>
+        <format>Number</format>
+        <currency/>
+        <decimal>N</decimal>
+        <group/>
+        <nullif/>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Probability</name>
+        <type>-</type>
+        <format>Number</format>
+        <currency/>
+        <decimal>N</decimal>
+        <group/>
+        <nullif/>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Company_K</name>
+        <type>-</type>
+        <format>Integer</format>
+        <currency/>
+        <decimal>N</decimal>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>9</position>
@@ -576,12 +484,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>ASSIGN_DATE_K</name>
-        <type>Integer</type>
-        <format>0000000000000</format>
+        <name>Issue_Date_K</name>
+        <type>-</type>
+        <format>Integer</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>9</position>
@@ -591,12 +499,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>TARGET_DATE_K</name>
-        <type>Integer</type>
-        <format>0000000000000</format>
+        <name>Assigned_Date_K</name>
+        <type>-</type>
+        <format>Integer</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>9</position>
@@ -606,12 +514,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>ACTUAL_DATE_K</name>
-        <type>Integer</type>
-        <format>0000000000000</format>
+        <name>Target_Date_K</name>
+        <type>-</type>
+        <format>Integer</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>9</position>
@@ -621,87 +529,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>AMOUNT</name>
-        <type>Number</type>
-        <format>0000000000.00</format>
+        <name>Actual_Date_K</name>
+        <type>-</type>
+        <format>Integer</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
-        <nullif/>
-        <ifnull/>
-        <position>12</position>
-        <length>2</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>AMOUNT_LOCAL</name>
-        <type>Number</type>
-        <format>0000000000.00</format>
-        <currency/>
-        <decimal>N</decimal>
-        <group>none</group>
-        <nullif/>
-        <ifnull/>
-        <position>12</position>
-        <length>2</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>AMOUNT_WEIGHTED</name>
-        <type>Number</type>
-        <format>0000000000.00</format>
-        <currency/>
-        <decimal>N</decimal>
-        <group>none</group>
-        <nullif/>
-        <ifnull/>
-        <position>12</position>
-        <length>2</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>AMOUNT_LOCAL_WEIGHTED</name>
-        <type>Number</type>
-        <format>0000000000.00</format>
-        <currency/>
-        <decimal>N</decimal>
-        <group>none</group>
-        <nullif/>
-        <ifnull/>
-        <position>12</position>
-        <length>2</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>PROBABILITY</name>
-        <type>Number</type>
-        <format>0000000000.00</format>
-        <currency/>
-        <decimal>N</decimal>
-        <group>none</group>
-        <nullif/>
-        <ifnull/>
-        <position>12</position>
-        <length>2</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>COMPANY_K</name>
-        <type>Integer</type>
-        <format>0000000000.00</format>
-        <currency/>
-        <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>9</position>
@@ -711,12 +544,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>DIVISION_K</name>
-        <type>Integer</type>
-        <format>0000000000.00</format>
+        <name>local_currency_k</name>
+        <type>-</type>
+        <format>Integer</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>9</position>
@@ -726,12 +559,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>BUSINESS_UNIT_K</name>
-        <type>Integer</type>
-        <format>0000000000000</format>
+        <name>Division_K</name>
+        <type>-</type>
+        <format>Integer</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>9</position>
@@ -741,12 +574,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>PROFIT_CENTER_K</name>
-        <type>Integer</type>
-        <format>0000000000000</format>
+        <name>Business_Unit_K</name>
+        <type>-</type>
+        <format>Integer</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>9</position>
@@ -756,12 +589,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>CRM_ACCOUNT_K</name>
-        <type>Integer</type>
-        <format>0000000000000</format>
+        <name>User_K</name>
+        <type>-</type>
+        <format>Integer</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>9</position>
@@ -771,12 +604,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>USER_K</name>
-        <type>Integer</type>
-        <format>0000000000000</format>
+        <name>Profit_Center_K</name>
+        <type>-</type>
+        <format>Integer</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>9</position>
@@ -786,12 +619,42 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>LOCAL_CURRENCY_K</name>
-        <type>Integer</type>
-        <format>0000000000000</format>
+        <name>Type</name>
+        <type>-</type>
+        <format>String</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
+        <group/>
+        <nullif/>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Stage</name>
+        <type>-</type>
+        <format>String</format>
+        <currency/>
+        <decimal>N</decimal>
+        <group/>
+        <nullif/>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>CRM_Account_K</name>
+        <type>-</type>
+        <format>Integer</format>
+        <currency/>
+        <decimal>N</decimal>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>9</position>
@@ -801,27 +664,12 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>CONTACT_CITY_K</name>
-        <type>Integer</type>
-        <format>0000000000000</format>
+        <name>Contact_City_K</name>
+        <type>-</type>
+        <format>Integer</format>
         <currency/>
         <decimal>N</decimal>
-        <group>none</group>
-        <nullif/>
-        <ifnull/>
-        <position>9</position>
-        <length>0</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>ISSUE_PERIOD_ENDDATE_K</name>
-        <type>Integer</type>
-        <format>0000000000000</format>
-        <currency/>
-        <decimal>N</decimal>
-        <group>none</group>
+        <group/>
         <nullif/>
         <ifnull/>
         <position>9</position>
@@ -858,8 +706,8 @@
     <sizeFieldName/>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>90</xloc>
-      <yloc>25</yloc>
+      <xloc>121</xloc>
+      <yloc>52</yloc>
       <draw>Y</draw>
       </GUI>
     </step>

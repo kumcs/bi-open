@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+	<!-- 
+	Copyright 2012-2014 Jeff Gunderson
+	Refer to included license
+	--> 
 <!-- 
      Cubes using views for tenant support and xTuple strings.  
      Note that entity definitions including other entity defintions must be defined in the
@@ -28,8 +32,7 @@
 <Schema name="&Schema;">
     <!-- 
 	      Careful, there are issues with the schema parser.  UserDefinedFunctions must be last.
-	      For some reason sales must be after crm or the UserDefinedFuctions aren't found when
-		  used by sales.
+	      For some reason sales must be last or the UserDefinedFuctions aren't found.
 	-->
 	<Parameter name="APRValue" type="Numeric" modifiable="false" defaultValue=".065"/>
 	<!-- Conformed Dimensions -->
