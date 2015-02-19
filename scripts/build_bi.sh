@@ -27,7 +27,6 @@ DATABASEUSER=admin
 DATABASEPASSWORD=admin
 DATABASEPORT=5432
 DATABASELOADPORT=5432
-DATABASELOADEMBEDDED=N
 DATABASESSL=
 GETZIPS=Y
 TENANT=default
@@ -37,7 +36,7 @@ HTTPNAME=localhost
 CREATE=Y
 INCREMENTAL=N
 
-while getopts ":ieblmuxyzEd:U:g:P:t:N:n:j:h:p:c:o:r:k:" opt; do
+while getopts ":ieblmuxyzd:U:g:P:t:N:n:j:h:p:c:o:r:k:" opt; do
   case $opt in
     e)
       # Install ErpBI and configure
@@ -82,10 +81,6 @@ while getopts ":ieblmuxyzEd:U:g:P:t:N:n:j:h:p:c:o:r:k:" opt; do
     o)
       # Set database port (for load)
       DATABASELOADPORT=$OPTARG
-      ;;
-    E)
-      # Set database (for load) to embedded for demos
-      DATABASELOADEMBEDDED=Y
       ;;	  
     y)
       # Set database ssl connect option (for extract)
@@ -134,7 +129,7 @@ while getopts ":ieblmuxyzEd:U:g:P:t:N:n:j:h:p:c:o:r:k:" opt; do
     z)
       # Do not download Pentaho zip files
       GETZIPS=N
-      ;;	  
+      ;;  
     \?)
       log "Invalid option: -"$OPTARG
       exit 1
@@ -272,11 +267,11 @@ download_files () {
 	if  [ "$GETZIPS" = "Y" ]
 	then
 		rm  -f ../../ErpBI.zip
-		wget http://sourceforge.net/projects/erpbi/files/bundles/ErpBI.zip/download -O  ../../ErpBI.zip -nv
+		wget http://sourceforge.net/projects/bidiscover/files/bundles/ErpBI.zip/download -O  ../../ErpBI.zip -nv
 		rm  -f ../../biserver-ce.zip
-		wget http://sourceforge.net/projects/erpbi/files/bundles/biserver-ce.zip/download -O  ../../biserver-ce.zip -nv
+		wget http://sourceforge.net/projects/bidiscover/files/bundles/biserver-ce.zip/download -O  ../../biserver-ce.zip -nv
 		rm  -f ../../data-integration.zip
-		wget http://sourceforge.net/projects/erpbi/files/bundles/data-integration.zip/download -O  ../../data-integration.zip -nv
+		wget http://sourceforge.net/projects/bidiscover/files/bundles/data-integration.zip/download -O  ../../data-integration.zip -nv
 	fi
 	log ""
 	log "######################################################"
@@ -334,24 +329,13 @@ download_files () {
 	sed s/port=\"8443\"/port=\"$BISERVERPORT\"/ | \
 	sed s/sslProtocol=\"TLS\"/protocols=\"TLSv1.2,TLSv1.1,TLSv1,SSLv2Hello\"/ \
 	> server.xml  2>&1 | tee -a $LOG_FILE
-	#
-	# If datamart is not embedded update connection info to postgresql, else update data mart name
-	#
-	if  [ "$DATABASELOADEMBEDDED" = "N" ]
-      then	
-	    cdir $BISERVER_HOME/biserver-ce/tomcat/conf/Catalina/localhost
-	    mv pentaho.xml pentaho.xml.sample
-	    cat pentaho.xml.sample | \
-	    sed s/org.h2.Driver/org.postgresql.Driver/ | \
-	    sed s'#jdbc:h2:../../../h2database/demomfg#jdbc:postgresql://localhost:'$DATABASELOADPORT'/erpbi#' \
-	    > pentaho.xml  2>&1 | tee -a $LOG_FILE
-	  else
-	    cdir $BISERVER_HOME/biserver-ce/tomcat/conf/Catalina/localhost
-	    mv pentaho.xml pentaho.xml.sample
-	    cat pentaho.xml.sample | \
-	    sed s'#jdbc:h2:../../../h2database/demomfg#jdbc:h2:../../../h2database/erpbi#' \
-	    > pentaho.xml  2>&1 | tee -a $LOG_FILE	
-	fi
+	
+	cdir $BISERVER_HOME/biserver-ce/tomcat/conf/Catalina/localhost
+	mv pentaho.xml pentaho.xml.sample
+	cat pentaho.xml.sample | \
+	sed s/org.h2.Driver/org.postgresql.Driver/ | \
+	sed s'#jdbc:h2:../../../h2database/demomfg#jdbc:postgresql://localhost:'$DATABASELOADPORT'/erpbi#' \
+	> pentaho.xml  2>&1 | tee -a $LOG_FILE
 }
 
 run_scripts() {
@@ -415,6 +399,8 @@ load_pentaho() {
 	sed s'#erpi.source.url=.*#erpi.source.url=jdbc\:postgresql\://'$DATABASEHOST'\:'$DATABASEPORT'/'$DATABASE$DATABASESSL'#' | \
 	sed s'#erpi.source.user=.*#erpi.source.user='$DATABASEUSER'#' | \
 	sed s'#erpi.source.password.*#erpi.source.password='$DATABASEPASSWORD'#' | \
+	sed s'#erpi.datamart.port.*#erpi.datamart.port='$DATABASELOADPORT'#' | \
+	sed s'#erpi.datamart.url=.*#erpi.datamart.url=jdbc\:postgresql\://localhost\:'$DATABASELOADPORT'/erpbi#' | \
 	sed s'#erpi.cities.file.*#erpi.cities.file='$CITIES'#' | \
 	sed s'#erpi.tenant.id=.*#erpi.tenant.id='$TENANT'.'$DATABASE'#' | \
 	#sed s'#erpi.tenant.id=.*#erpi.tenant.id='default.dev'#' |
@@ -422,29 +408,6 @@ load_pentaho() {
 	sed s'#erpi.loaderpath=.*#erpi.loaderpath='$PSGLOCATION'#' | \
 	sed s'#erpi.incremental=.*#erpi.incremental='$INCREMENTAL'#' \
 	> $KETTLE_HOME/.kettle/kettle.properties  2>&1 | tee -a $LOG_FILE
-	
-	# We also update the properties in .kettle if they want to use spoon interactively
-	cp -rf $KETTLE_HOME/.kettle/kettle.properties .kettle
-	
-	if  [ "$DATABASELOADEMBEDDED" = "N" ]
-      then
-	  	mv $KETTLE_HOME/.kettle/kettle.properties $KETTLE_HOME/.kettle/kettle.properties.sample  2>&1 | tee -a $LOG_FILE
-	    cat $KETTLE_HOME/.kettle/kettle.properties.sample | \
-	    sed s'#erpi.datamart.loader.*#erpi.datamart.loader=postgresql#' | \
-	    sed s'#erpi.datamart.schemacascade.*#erpi.datamart.schemacascade=CASCADE#' | \
-	    sed s'#erpi.datamart.driver.*#erpi.datamart.driver=org.postgresql.Driver#' | \
-	    sed s'#erpi.datamart.port.*#erpi.datamart.port='$DATABASELOADPORT'#' | \
-	    sed s'#erpi.datamart.url=.*#erpi.datamart.url=jdbc\:postgresql\://localhost\:'$DATABASELOADPORT'/erpbi#' \
-	    > $KETTLE_HOME/.kettle/kettle.properties  2>&1 | tee -a $LOG_FILE
-	  else
-	  	mv $KETTLE_HOME/.kettle/kettle.properties $KETTLE_HOME/.kettle/kettle.properties.sample  2>&1 | tee -a $LOG_FILE
-	    cat $KETTLE_HOME/.kettle/kettle.properties.sample | \
-	    sed s'#erpi.datamart.loader.*#erpi.datamart.loader=jdbc#' | \
-	    sed s'#erpi.datamart.schemacascade.*#erpi.datamart.schemacascade=#' | \
-	    sed s'#erpi.datamart.driver.*#erpi.datamart.driver=org.h2.Driver#' | \
-	    sed s'#erpi.datamart.url=.*#erpi.datamart.url=jdbc\:h2\:../h2database/erpbi#' \
-	    > $KETTLE_HOME/.kettle/kettle.properties  2>&1 | tee -a $LOG_FILE
-	fi	
 	
 	# Set PGPASSWORD to stop psg from prompting for password.  In case pg_hba.conf does not have
 	# local   all   all     trust 
@@ -480,8 +443,8 @@ prep_mobile() {
 	sed 's#restkeyfile:.*#restkeyfile:\"./lib/rest-keys/server.key\",#' | \
 	sed 's#\"tenantname\":.*#tenantname:\"'$TENANT'",#' | \
 	sed 's#tenantname:.*#tenantname:\"'$TENANT'",#' | \
-	sed 's#\"bihttpsport\":.*#bihttpsport:443,#' | \
-	sed 's#bihttpsport:.*#bihttpsport:443,#' | \
+	sed 's#\"bihttpsport\":.*#bihttpsport:9007,#' | \
+	sed 's#bihttpsport:.*#bihttpsport:9007,#' | \
 	sed 's#\"bihttpshost\":.*#bihttpshost:\"'$COMMONNAME'\",#' | \
 	sed 's#bihttpshost:.*#bihttpshost:\"'$COMMONNAME'\",#' | \
 	sed 's#\"bihttpport\":.*#bihttpport:8080,#' | \
