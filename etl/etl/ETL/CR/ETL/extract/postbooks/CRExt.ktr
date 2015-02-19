@@ -424,10 +424,10 @@ from ophead
 	to_char(quhead_expire,&apos;MM&#47;DD&#47;YYYY&apos;)::text												as &quot;Expire_Date&quot;,
 
 	currtobase(quhead_curr_id, quitem_price, quhead_quotedate) 								as so_baseunitprice,
-	round((quitem_qtyord * currtobase(quhead_curr_id, quitem_custprice, quhead_quotedate)), 2) 	as &quot;Amount_List&quot;,
-	round((quitem_qtyord * currtobase(quhead_curr_id, quitem_custprice, quhead_quotedate)), 2) 	as &quot;Amount_List_Local&quot;,
-	round((quitem_qtyord * currtobase(quhead_curr_id, quitem_price, quhead_quotedate)), 2) 	as &quot;Amount&quot;,
-	round((quitem_qtyord * currtobase(quhead_curr_id, quitem_price, quhead_quotedate)), 2) 	as &quot;Amount_Local&quot;,
+	round(quitem_qtyord * quitem_qty_invuomratio * (currtobase(quhead_curr_id, quitem_custprice, quhead_quotedate)&#47;quitem_price_invuomratio),2) 	as &quot;Amount_List&quot;,
+	round(quitem_qtyord * quitem_qty_invuomratio * (currtobase(quhead_curr_id, quitem_custprice, quhead_quotedate)&#47;quitem_price_invuomratio),2)     as &quot;Amount_List_Local&quot;,
+	round(quitem_qtyord * quitem_qty_invuomratio * (currtobase(quhead_curr_id, quitem_price, quhead_quotedate)&#47;quitem_price_invuomratio),2) 		as &quot;Amount&quot;,
+	round(quitem_qtyord * quitem_qty_invuomratio * (currtobase(quhead_curr_id, quitem_price, quhead_quotedate)&#47;quitem_price_invuomratio),2) 		as &quot;Amount_Local&quot;,
 	quitem_qtyord																			as &quot;Quantity_Order&quot;,					    
 	COALESCE(quitem_unitcost, 0)															as &quot;Cost&quot;,
 	cust_number 																			as &quot;Customer&quot;,
@@ -479,6 +479,98 @@ WHERE (quhead_quotedate &gt;= &apos;${extractstartdate}&apos; OR (quhead_quoteda
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>294</xloc>
       <yloc>210</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Fix null company</name>
+    <type>Calculator</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+       <calculation><field_name>constant</field_name>
+<calc_type>CONSTANT</calc_type>
+<field_a>Unspecified</field_a>
+<field_b/>
+<field_c/>
+<value_type>String</value_type>
+<value_length>-1</value_length>
+<value_precision>-1</value_precision>
+<remove>N</remove>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<currency_symbol/>
+</calculation>
+       <calculation><field_name>Company</field_name>
+<calc_type>NVL</calc_type>
+<field_a>CompanyRaw</field_a>
+<field_b>constant</field_b>
+<field_c/>
+<value_type>String</value_type>
+<value_length>-1</value_length>
+<value_precision>-1</value_precision>
+<remove>N</remove>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<currency_symbol/>
+</calculation>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>442</xloc>
+      <yloc>210</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Fix null company 2</name>
+    <type>Calculator</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+       <calculation><field_name>constant</field_name>
+<calc_type>CONSTANT</calc_type>
+<field_a>Unspecified</field_a>
+<field_b/>
+<field_c/>
+<value_type>String</value_type>
+<value_length>-1</value_length>
+<value_precision>-1</value_precision>
+<remove>N</remove>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<currency_symbol/>
+</calculation>
+       <calculation><field_name>Company</field_name>
+<calc_type>NVL</calc_type>
+<field_a>CompanyRaw</field_a>
+<field_b>constant</field_b>
+<field_c/>
+<value_type>String</value_type>
+<value_length>-1</value_length>
+<value_precision>-1</value_precision>
+<remove>N</remove>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<currency_symbol/>
+</calculation>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>445</xloc>
+      <yloc>493</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -1732,98 +1824,6 @@ if ( (Status.getString() == &quot;Closed&quot;) || (Status.getString() == &quot;
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>293</xloc>
       <yloc>492</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Fix null company</name>
-    <type>Calculator</type>
-    <description/>
-    <distribute>Y</distribute>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-       <calculation><field_name>constant</field_name>
-<calc_type>CONSTANT</calc_type>
-<field_a>Unspecified</field_a>
-<field_b/>
-<field_c/>
-<value_type>String</value_type>
-<value_length>-1</value_length>
-<value_precision>-1</value_precision>
-<remove>N</remove>
-<conversion_mask/>
-<decimal_symbol/>
-<grouping_symbol/>
-<currency_symbol/>
-</calculation>
-       <calculation><field_name>Company</field_name>
-<calc_type>NVL</calc_type>
-<field_a>CompanyRaw</field_a>
-<field_b>constant</field_b>
-<field_c/>
-<value_type>String</value_type>
-<value_length>-1</value_length>
-<value_precision>-1</value_precision>
-<remove>N</remove>
-<conversion_mask/>
-<decimal_symbol/>
-<grouping_symbol/>
-<currency_symbol/>
-</calculation>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>442</xloc>
-      <yloc>210</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Fix null company 2</name>
-    <type>Calculator</type>
-    <description/>
-    <distribute>Y</distribute>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-       <calculation><field_name>constant</field_name>
-<calc_type>CONSTANT</calc_type>
-<field_a>Unspecified</field_a>
-<field_b/>
-<field_c/>
-<value_type>String</value_type>
-<value_length>-1</value_length>
-<value_precision>-1</value_precision>
-<remove>N</remove>
-<conversion_mask/>
-<decimal_symbol/>
-<grouping_symbol/>
-<currency_symbol/>
-</calculation>
-       <calculation><field_name>Company</field_name>
-<calc_type>NVL</calc_type>
-<field_a>CompanyRaw</field_a>
-<field_b>constant</field_b>
-<field_c/>
-<value_type>String</value_type>
-<value_length>-1</value_length>
-<value_precision>-1</value_precision>
-<remove>N</remove>
-<conversion_mask/>
-<decimal_symbol/>
-<grouping_symbol/>
-<currency_symbol/>
-</calculation>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>445</xloc>
-      <yloc>493</yloc>
       <draw>Y</draw>
       </GUI>
     </step>

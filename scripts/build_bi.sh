@@ -272,11 +272,11 @@ download_files () {
 	if  [ "$GETZIPS" = "Y" ]
 	then
 		rm  -f ../../ErpBI.zip
-		wget http://sourceforge.net/projects/erpbi/files/bundles/ErpBI.zip/download -O  ../../ErpBI.zip -nv
+		wget http://sourceforge.net/projects/bidiscover/files/bundles/ErpBI.zip/download -O  ../../ErpBI.zip -nv
 		rm  -f ../../biserver-ce.zip
-		wget http://sourceforge.net/projects/erpbi/files/bundles/biserver-ce.zip/download -O  ../../biserver-ce.zip -nv
+		wget http://sourceforge.net/projects/bidiscover/files/bundles/biserver-ce.zip/download -O  ../../biserver-ce.zip -nv
 		rm  -f ../../data-integration.zip
-		wget http://sourceforge.net/projects/erpbi/files/bundles/data-integration.zip/download -O  ../../data-integration.zip -nv
+		wget http://sourceforge.net/projects/bidiscover/files/bundles/data-integration.zip/download -O  ../../data-integration.zip -nv
 	fi
 	log ""
 	log "######################################################"
@@ -480,8 +480,8 @@ prep_mobile() {
 	sed 's#restkeyfile:.*#restkeyfile:\"./lib/rest-keys/server.key\",#' | \
 	sed 's#\"tenantname\":.*#tenantname:\"'$TENANT'",#' | \
 	sed 's#tenantname:.*#tenantname:\"'$TENANT'",#' | \
-	sed 's#\"bihttpsport\":.*#bihttpsport:443,#' | \
-	sed 's#bihttpsport:.*#bihttpsport:443,#' | \
+	sed 's#\"bihttpsport\":.*#bihttpsport:9007,#' | \
+	sed 's#bihttpsport:.*#bihttpsport:9007,#' | \
 	sed 's#\"bihttpshost\":.*#bihttpshost:\"'$COMMONNAME'\",#' | \
 	sed 's#bihttpshost:.*#bihttpshost:\"'$COMMONNAME'\",#' | \
 	sed 's#\"bihttpport\":.*#bihttpport:8080,#' | \
